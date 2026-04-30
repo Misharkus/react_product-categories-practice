@@ -19,7 +19,10 @@ const products = productsFromServer.map(product => {
   return { ...product, findCategory, findUser };
 });
 
-function getPreparedProducts(allProducts, { activeUser, activeCategory }) {
+function getPreparedProducts(
+  allProducts,
+  { activeUser, activeCategory, query },
+) {
   let preparedProducts = [...allProducts];
 
   if (activeUser !== 'all') {
@@ -34,15 +37,24 @@ function getPreparedProducts(allProducts, { activeUser, activeCategory }) {
     );
   }
 
+  if (query) {
+    preparedProducts = preparedProducts.filter(product => {
+      return product.name.toLowerCase().includes(query.toLowerCase());
+    });
+  }
+
   return preparedProducts;
 }
 
 export const App = () => {
   const [activeUser, setActiveUser] = useState('all');
   const [activeCategory, setActiveCategory] = useState('all');
+  const [query, setQuery] = useState('');
+
   const visibleProducts = getPreparedProducts(products, {
     activeUser,
     activeCategory,
+    query,
   });
 
   return (
@@ -88,7 +100,8 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={query}
+                  onChange={event => setQuery(event.target.value)}
                 />
 
                 <span className="icon is-left">
@@ -97,11 +110,16 @@ export const App = () => {
 
                 <span className="icon is-right">
                   {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
+                  {query !== '' ? (
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={() => setQuery('')}
+                    />
+                  ) : (
+                    ''
+                  )}
                 </span>
               </p>
             </div>
