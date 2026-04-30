@@ -115,7 +115,11 @@ export const App = () => {
                       data-cy="ClearButton"
                       type="button"
                       className="delete"
-                      onClick={() => setQuery('')}
+                      onClick={() => {
+                        setQuery('');
+                        setActiveCategory('all');
+                        setActiveUser('all');
+                      }}
                     />
                   ) : (
                     ''
@@ -156,6 +160,11 @@ export const App = () => {
                 data-cy="ResetAllButton"
                 href="#/"
                 className="button is-link is-outlined is-fullwidth"
+                onClick={() => {
+                  setQuery('');
+                  setActiveCategory('all');
+                  setActiveUser('all');
+                }}
               >
                 Reset all filters
               </a>
@@ -164,9 +173,13 @@ export const App = () => {
         </div>
 
         <div className="box table-container">
-          <p data-cy="NoMatchingMessage">
-            No products matching selected criteria
-          </p>
+          {visibleProducts.length === 0 ? (
+            <p data-cy="NoMatchingMessage">
+              No products matching selected criteria
+            </p>
+          ) : (
+            ''
+          )}
 
           <table
             data-cy="ProductTable"
